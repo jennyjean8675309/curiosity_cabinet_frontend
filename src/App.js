@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import CabinetsContainer from './Containers/CabinetsContainer';
 import Cabinet from './Containers/Cabinet'
 import NavBar from './NavBar'
@@ -13,7 +12,7 @@ class App extends Component {
     super()
     this.state = {
       allCabinets: [],
-      currentCabinet: {}
+      selectedCabinet: {}
     }
   }
 
@@ -25,16 +24,30 @@ class App extends Component {
       }))
   }
 
+  setSelectedCabinet = (cabinet) => {
+    this.setState({
+      selectedCabinet: cabinet
+    })
+  }
+
   render() {
     return (
-      <Router>
-        <React.Fragment>
-          <Route path="/" render={() => <NavBar />} />
-          <Route exact path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}/>} />
-          <Route exact path="/cabinets/:id" render={() => <Cabinet />} />
-          <Route exact path="/cabinets/:id/:item_id" render={() => <Item />} />
-        </React.Fragment>
-      </Router>
+      <div className="App">
+        <NavBar />
+        <Switch>
+          <Route path="/cabinets/:id/:item_id" render={() => <Item />} />
+
+          <Route path="/cabinets/:id" render={(props) => {
+              let cabinetId = Number(props.match.params.id)
+              return <Cabinet cabinet={this.state.allCabinets.find(c => c.id === cabinetId)}/>
+            }}
+
+            />
+
+          <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}
+          select={this.setSelectedCabinet} /> }/>
+        </Switch>
+      </div>
     );
   }
 }

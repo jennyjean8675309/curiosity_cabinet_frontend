@@ -3,7 +3,10 @@ import React, { Component } from 'react'
 class Item extends Component{
   render(){
     return (
-      <div>This is an item.</div>
+      <div>
+        <div>{this.props.item.name}</div>
+        <img alt={this.props.item.name} src={this.props.item.image_url}/>
+      </div>
     )
   }
 }

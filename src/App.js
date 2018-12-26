@@ -4,15 +4,17 @@ import { Route, Switch } from 'react-router-dom';
 import CabinetsContainer from './Containers/CabinetsContainer';
 import Cabinet from './Containers/Cabinet'
 import NavBar from './NavBar'
-import Item from './Item'
 import 'semantic-ui-css/semantic.min.css'
+import Item from './Item'
+import Home from './Home'
 
 class App extends Component {
   constructor(){
     super()
     this.state = {
       allCabinets: [],
-      selectedCabinet: {}
+      selectedCabinet: {},
+      selectedItem: {}
     }
   }
 
@@ -30,22 +32,36 @@ class App extends Component {
     })
   }
 
+  setSelectedItem = (item) =>
+  {
+    this.setState({
+      selectedItem: item
+    })
+  }
+
+// <Item item={this.state.selectedCabinet.items.find((i) => i.item_id === Number(props.match.params.item_id))} />
+
   render() {
     return (
       <div className="App">
         <NavBar />
         <Switch>
-          <Route path="/cabinets/:id/:item_id" render={() => <Item />} />
+          <Route path="/cabinets/:id/:item_id" render={(props) => {
+              return <Item item={this.state.selectedItem}/>
+              }}
+            />
 
           <Route path="/cabinets/:id" render={(props) => {
               let cabinetId = Number(props.match.params.id)
-              return <Cabinet cabinet={this.state.allCabinets.find(c => c.id === cabinetId)}/>
+              return <Cabinet cabinet={this.state.allCabinets.find(c => c.id === cabinetId)}
+              selectItem={this.setSelectedItem} />
             }}
-
             />
 
           <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}
-          select={this.setSelectedCabinet} /> }/>
+          selectCabinet={this.setSelectedCabinet} /> }/>
+
+          <Route path="/" component={Home} />
         </Switch>
       </div>
     );

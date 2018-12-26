@@ -1,8 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 const NavBar = () =>
-  <div>
-      This is where a link to my login form will go, as well as a link to view all cabinets.
-  </div>;
+  <div className="ui menu">
+    <a className="item"><i className="binoculars icon"></i></a>
+    <div className="right menu">
+      <a className="item">About</a>
+      <a className="item">My Cabinet</a>
+      <Link to="cabinets" className="item">Explore</Link>
+    </div>
+  </div>
 
 export default NavBar

@@ -1,21 +1,23 @@
 import React, {Component} from 'react'
-import Item from '../Item'
+import ItemCard from '../ItemCard'
 
 class Cabinet extends Component{
   render(){
-    console.log(this.props.cabinet)
     return (
       <div>
-        {this.props.cabinet ?
+        { this.props.cabinet ?
           <div>
-            <div>{this.props.cabinet.name}</div>
-            <div>{this.props.cabinet.items.map(i => {
-                return <Item
-                        key={i.item_id}
-                        item={i} />
-              })}</div>
+            <div><h1>{this.props.cabinet.name}</h1></div>
+            <br></br>
+            <div className="ui four cards">{this.props.cabinet.items.map(i => {
+              return <ItemCard
+                      key={i.item_id}
+                      item={i}
+                      cabinet={this.props.cabinet}
+                      selectItem={this.props.selectItem}/>
+            })}</div>
           </div> :
-          null}
+          null }
       </div>
     )
   }

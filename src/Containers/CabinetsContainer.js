@@ -4,12 +4,12 @@ import CabinetCard from './CabinetCard'
 class CabinetsContainer extends Component{
   render(){
     return (
-      <div>
+      <div className="ui five cards">
         {this.props.allCabinets.map(cabinet =>
           <CabinetCard
             key={cabinet.id}
             cabinet={cabinet}
-            handleOnClick={this.props.select}
+            handleOnClick={this.props.selectCabinet}
           />
         )}
       </div>

@@ -30,3 +30,21 @@
     transform: rotate(360deg);
   }
 }
+
+.main-image {
+  margin: 0;
+  padding-top: 50px;
+  padding-bottom: 160px;
+}
+
+.home-header {
+  font-family: 'Chalkduster';
+  font-size: 60px;
+  text-align: left;
+}
+
+.home-subheader {
+  font-family: 'Chalkduster';
+  font-size: 40px;
+  text-align: right;
+}

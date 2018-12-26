@@ -6,7 +6,7 @@ const NavBar = () =>
     <a className="item"><i className="binoculars icon"></i></a>
     <div className="right menu">
       <a className="item">About</a>
-      <a className="item">My Cabinet</a>
+      <Link to="/my_cabinet" className="item">My Cabinet</Link>
       <Link to="cabinets" className="item">Explore</Link>
     </div>
   </div>

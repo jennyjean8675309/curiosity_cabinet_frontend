@@ -7,6 +7,8 @@ import NavBar from './NavBar'
 import 'semantic-ui-css/semantic.min.css'
 import Item from './Item'
 import Home from './Home'
+import AccountButtons from './AccountButtons'
+import NewAccountForm from './NewAccountForm'
 
 class App extends Component {
   constructor(){
@@ -39,6 +41,10 @@ class App extends Component {
     })
   }
 
+  createAccount = () => {
+    console.log('creating a new account...')
+  }
+
 // <Item item={this.state.selectedCabinet.items.find((i) => i.item_id === Number(props.match.params.item_id))} />
 
   render() {
@@ -57,6 +63,10 @@ class App extends Component {
               selectItem={this.setSelectedItem} />
             }}
             />
+
+          <Route path="/new_account" render={() => <NewAccountForm />}/>
+
+          <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>}/>
 
           <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}
           selectCabinet={this.setSelectedCabinet} /> }/>

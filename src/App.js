@@ -19,7 +19,9 @@ class App extends Component {
       selectedCabinet: {},
       selectedItem: {},
       redirectToCabinet: false,
-      newCabinetId: 0
+      newCabinetId: 0,
+      redirectToItem: false,
+      newItemId: 0
     }
   }
 
@@ -72,6 +74,53 @@ class App extends Component {
       }))
   }
 
+  addItem = (e, cabinet) => {
+    let inputs = e.target.parentNode.firstElementChild.querySelectorAll('.input-field')
+    let data = {
+      "cabinet_id": this.state.selectedCabinet.id,
+      "item_type_id": inputs[5].value,
+      "name": inputs[0].value,
+      "description": inputs[3].value,
+      "interpretation": inputs[4].value,
+      "location": inputs[1].value,
+      "image_url": inputs[2].value
+    }
+    fetch('http://localhost:3000/api/v1/items', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => response.json())
+    .then(data => this.setState({
+      redirectToItem: true,
+      newItemId: data.id
+    }))
+  }
+
+  editItem = (e, item) => {
+    let inputs = e.target.parentNode.firstElementChild.querySelectorAll('.input-field')
+    let data = {
+      "cabinet_id": this.state.selectedCabinet.id,
+      "item_type_id": inputs[5].value,
+      "name": inputs[0].value,
+      "description": inputs[3].value,
+      "interpretation": inputs[4].value,
+      "location": inputs[1].value,
+      "image_url": inputs[2].value
+    }
+    fetch(`http://localhost:3000/api/v1/items/${item.item_id}`, {
+      method: 'PATCH',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => response.json())
+    .then(data => this.setState({
+      selectedItem: data
+    }))
+  }
+
   render() {
     return (
       <div className="App">
@@ -90,7 +139,12 @@ class App extends Component {
             />
 
           <Route path="/new_item" render={() => <NewItemForm
-              selectedCabinet={this.state.selectedCabinet}/>} />
+              selectedCabinet={this.state.selectedCabinet}
+              addItem={this.addItem}
+              redirectToItem={this.state.redirectToItem}
+              newItemId={this.state.newItemId}
+              selectedItem={this.state.selectedItem}
+              editItem={this.editItem}/>} />
 
           <Route path="/new_account" render={() => <NewAccountForm createAccount={this.createAccount}
           redirectToCabinet={this.state.redirectToCabinet}

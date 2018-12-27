@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import ItemCard from '../ItemCard'
+import { Link } from 'react-router-dom'
 
 class Cabinet extends Component{
   render(){
@@ -16,8 +17,14 @@ class Cabinet extends Component{
                       cabinet={this.props.cabinet}
                       selectItem={this.props.selectItem}/>
             })}</div>
-          </div> :
-          null }
+            <div>
+              <br></br>
+              <br></br>
+              <br></br>
+              <Link to="/new_item"><button>Collect an Item</button></Link>
+            </div>
+          </div>
+           : null }
       </div>
     )
   }

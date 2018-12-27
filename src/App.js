@@ -9,6 +9,7 @@ import Item from './Item'
 import Home from './Home'
 import AccountButtons from './AccountButtons'
 import NewAccountForm from './NewAccountForm'
+import NewItemForm from './NewItemForm'
 
 class App extends Component {
   constructor(){
@@ -16,7 +17,9 @@ class App extends Component {
     this.state = {
       allCabinets: [],
       selectedCabinet: {},
-      selectedItem: {}
+      selectedItem: {},
+      redirectToCabinet: false,
+      newCabinetId: 0
     }
   }
 
@@ -41,11 +44,33 @@ class App extends Component {
     })
   }
 
-  createAccount = () => {
-    console.log('creating a new account...')
+  createAccount = (e) => {
+    let values = e.target.parentNode.firstElementChild.querySelectorAll('input')
+    let data = {
+      "name": values[5].value,
+      "first_name": values[0].value,
+      "last_name": values[1].value,
+      "email": values[2].value,
+      "username": values[3].value,
+      "password": values[4].value,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Arolsen_Klebeband_09_231_1.jpg/405px-Arolsen_Klebeband_09_231_1.jpg",
+      "items": []
+    }
+    console.log(data)
+    fetch('http://localhost:3000/api/v1/cabinets', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => this.setState({
+        allCabinets: [...this.state.allCabinets, data],
+        redirectToCabinet: true,
+        newCabinetId: data.id
+      }))
   }
-
-// <Item item={this.state.selectedCabinet.items.find((i) => i.item_id === Number(props.match.params.item_id))} />
 
   render() {
     return (
@@ -64,7 +89,12 @@ class App extends Component {
             }}
             />
 
-          <Route path="/new_account" render={() => <NewAccountForm />}/>
+          <Route path="/new_item" render={() => <NewItemForm
+              selectedCabinet={this.state.selectedCabinet}/>} />
+
+          <Route path="/new_account" render={() => <NewAccountForm createAccount={this.createAccount}
+          redirectToCabinet={this.state.redirectToCabinet}
+          newCabinetId={this.state.newCabinetId}/>}/>
 
           <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>}/>
 

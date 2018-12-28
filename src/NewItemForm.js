@@ -5,7 +5,6 @@ class NewItemForm extends Component {
   constructor(props){
     super(props)
     this.state = {
-    //Here you can prefill the form with the selected item's props (if there is one) and reuse it for an item edit
       "itemName": this.props.selectedItem.name || '',
       "location": this.props.selectedItem.location || '',
       "imageUrl": this.props.selectedItem.image_url || '',
@@ -15,7 +14,6 @@ class NewItemForm extends Component {
     }
   }
   render(){
-    console.log(this.props.selectedCabinet)
     if (this.props.redirectToItem) {
       return <Redirect to={`/cabinets/${this.props.selectedCabinet.id}/${this.props.newItemId}`} />
     }

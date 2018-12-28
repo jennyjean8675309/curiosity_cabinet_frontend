@@ -117,9 +117,29 @@ class App extends Component {
       body: JSON.stringify(data)
     }).then(response => response.json())
     .then(data => this.setState({
-      selectedItem: data
+      selectedItem: data,
+      redirectToItem: true
     }))
   }
+
+  deleteItem = (item) => {
+    fetch(`http://localhost:3000/api/v1/items/${item.item_id}`, {
+      method: "DELETE"
+    }).then(response => response.json())
+    .then(data => this.deleteItemFromDOM(data))
+  }
+
+  deleteItemFromDOM = (data) => {
+    let item = this.state.selectedCabinet.items.find(i => i.item_id === data.id)
+    let clonedCabinet = Object.assign({},   this.state.selectedCabinet)
+    let itemIndex = clonedCabinet.items.indexOf(item)
+    let updatedCabinet = clonedCabinet.items.splice(itemIndex, 1)
+    this.setState({
+      selectedCabinet: clonedCabinet
+    })
+  }
+
+
 
   render() {
     return (
@@ -127,7 +147,9 @@ class App extends Component {
         <NavBar />
         <Switch>
           <Route path="/cabinets/:id/:item_id" render={(props) => {
-              return <Item item={this.state.selectedItem}/>
+              return <Item item={this.state.selectedItem}
+              deleteItem={this.deleteItem}
+              selectedCabinet={this.state.selectedCabinet}/>
               }}
             />
 

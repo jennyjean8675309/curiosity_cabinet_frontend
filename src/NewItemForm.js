@@ -60,10 +60,9 @@ class NewItemForm extends Component {
           </div>
           <br></br>
           <div className="ui submit button" onClick={(e) => {
-            if (this.props.selectedItem !== {}) {
-
+            if (this.props.addOrEditItem === 'edit') {
               this.props.editItem(e, this.props.selectedItem)
-            } else {
+            } else if (this.props.addOrEditItem === 'add') {
               this.props.addItem(e, this.props.selectedCabinet)
             }
           }}>Submit</div>

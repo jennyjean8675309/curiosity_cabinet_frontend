@@ -10,6 +10,7 @@ import Home from './Home'
 import AccountButtons from './AccountButtons'
 import NewAccountForm from './NewAccountForm'
 import NewItemForm from './NewItemForm'
+import About from './About'
 
 class App extends Component {
   constructor(){
@@ -21,7 +22,8 @@ class App extends Component {
       redirectToCabinet: false,
       newCabinetId: 0,
       redirectToItem: false,
-      newItemId: 0
+      newItemId: 0,
+      addOrEditItem: ''
     }
   }
 
@@ -72,6 +74,17 @@ class App extends Component {
         redirectToCabinet: true,
         newCabinetId: data.id
       }))
+  }
+
+  addOrEditItem = (command) => {
+    if (command === 'add'){
+    this.setState({
+      addOrEditItem: 'add'
+    })} else if (command === 'edit'){
+    this.setState({
+      addOrEditItem: 'edit'
+    })
+    }
   }
 
   addItem = (e, cabinet) => {
@@ -144,19 +157,23 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar />
+        <NavBar match={{params: {url:""}}}/>
         <Switch>
           <Route path="/cabinets/:id/:item_id" render={(props) => {
               return <Item item={this.state.selectedItem}
               deleteItem={this.deleteItem}
-              selectedCabinet={this.state.selectedCabinet}/>
+              selectedCabinet={this.state.selectedCabinet}
+              addOrEditItem={this.addOrEditItem}/>
               }}
             />
 
           <Route path="/cabinets/:id" render={(props) => {
               let cabinetId = Number(props.match.params.id)
               return <Cabinet cabinet={this.state.allCabinets.find(c => c.id === cabinetId)}
-              selectItem={this.setSelectedItem} />
+              selectItem={this.setSelectedItem}
+              addOrEditItem={this.addOrEditItem}
+              match={{params: {id:cabinetId, url:cabinetId}}}
+              />
             }}
             />
 
@@ -166,7 +183,8 @@ class App extends Component {
               redirectToItem={this.state.redirectToItem}
               newItemId={this.state.newItemId}
               selectedItem={this.state.selectedItem}
-              editItem={this.editItem}/>} />
+              editItem={this.editItem}
+              addOrEditItem={this.state.addOrEditItem} />} />
 
           <Route path="/new_account" render={() => <NewAccountForm createAccount={this.createAccount}
           redirectToCabinet={this.state.redirectToCabinet}
@@ -175,7 +193,11 @@ class App extends Component {
           <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>}/>
 
           <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}
-          selectCabinet={this.setSelectedCabinet} /> }/>
+          selectCabinet={this.setSelectedCabinet}
+          match={{params: {url:"/cabinets"}}}
+          /> }/>
+
+          <Route path="/about" component={About}/>
 
           <Route path="/" component={Home} />
         </Switch>

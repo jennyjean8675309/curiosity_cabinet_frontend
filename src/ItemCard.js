@@ -15,7 +15,7 @@ class ItemCard extends Component{
           </div>
           <div className="description">{this.props.item.description}
           </div>
-          <Link to={"cabinets/" + this.props.cabinet.id + this.props.item.item_id}><div className="ui bottom attached button" onClick={() => this.props.selectItem(this.props.item)}>
+          <Link to={`${this.props.match.params.url}/${this.props.item.item_id}`}><div className="ui bottom attached button" onClick={() => this.props.selectItem(this.props.item)}>
             <i className="add icon"></i>
               See More
           </div></Link>

@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 const Home = () =>
   <div className="main-image">
       <h1 className="home-header">Cabinets of Curiosity</h1>

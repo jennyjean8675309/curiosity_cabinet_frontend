@@ -10,6 +10,7 @@ class CabinetsContainer extends Component{
             key={cabinet.id}
             cabinet={cabinet}
             handleOnClick={this.props.selectCabinet}
+            match={this.props.match}
           />
         )}
       </div>

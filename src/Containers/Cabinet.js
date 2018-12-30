@@ -15,13 +15,14 @@ class Cabinet extends Component{
                       key={i.item_id}
                       item={i}
                       cabinet={this.props.cabinet}
-                      selectItem={this.props.selectItem}/>
+                      selectItem={this.props.selectItem}
+                      match={this.props.match} />
             })}</div>
             <div>
               <br></br>
               <br></br>
               <br></br>
-              <Link to="/new_item"><button>Collect an Item</button></Link>
+              <Link to="/new_item"><button onClick={() => this.props.addOrEditItem('add')}>Collect an Item</button></Link>
             </div>
           </div>
            : null }

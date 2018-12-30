@@ -15,7 +15,7 @@ class Item extends Component{
             <h3>{this.props.item.description}</h3>
             <h3>{this.props.item.interpretation}</h3>
             <br></br>
-            <Link to="/new_item"><button>Edit This Item</button></Link>
+            <Link to="/new_item"><button onClick={() => this.props.addOrEditItem('edit')}>Edit This Item</button></Link>
             <br></br>
             <br></br>
             <Link to={`/cabinets/${this.props.selectedCabinet.id}`}><button onClick={() => this.props.deleteItem(this.props.item)}>Delete This Item</button></Link>

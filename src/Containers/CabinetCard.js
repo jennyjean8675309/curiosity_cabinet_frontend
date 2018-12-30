@@ -13,7 +13,8 @@ class CabinetCard extends Component{
           </div>
 
           <div className="extra content">
-            <Link to={"cabinets/" + this.props.cabinet.id}><div className="ui bottom attached button" onClick={() => this.props.handleOnClick(this.props.cabinet)}>
+            <Link to={`${this.props.match.params.url}/${this.props.cabinet.id}`}><div className="ui bottom attached button" onClick={(props) =>
+            this.props.handleOnClick(this.props.cabinet)}>
               <i className="add icon"></i>
                 See Inside
             </div></Link>

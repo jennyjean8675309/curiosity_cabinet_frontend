@@ -13,7 +13,7 @@ const NavBar = (props) =>
 
       <Link to={`${props.match.params.url}/cabinets`} className="item">Explore</Link>
 
-      {localStorage.getItem('token') ?
+      {props.showLogout ?
         <Link onClick={props.logOut} to={`${props.match.params.url}`} className="item">Log Out</Link>
       : null
       }

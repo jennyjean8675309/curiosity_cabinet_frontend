@@ -35,7 +35,7 @@ class Login extends Component {
           this.props.setCurrentUser(data.user_info)
           localStorage.setItem('token', data.token)
       }
-    })
+    }, this.props.login())
   }
 
   render(){

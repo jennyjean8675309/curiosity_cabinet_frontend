@@ -26,7 +26,8 @@ class App extends Component {
       redirectToItem: false,
       newItemId: 0,
       addOrEditItem: '',
-      loading: true
+      loading: true,
+      showLogout: false
     }
   }
 
@@ -57,7 +58,8 @@ class App extends Component {
         console.log(data)
         this.setState({
         currentUser: data.user,
-        loading: false
+        loading: false,
+        showLogout: true
       })})
     } else {
       this.setState({
@@ -72,10 +74,17 @@ class App extends Component {
     })
   }
 
+  login = () =>{
+    this.setState({
+      showLogout: true
+    })
+  }
+
   logOut = () =>{
     console.log('logging out...')
     this.setState({
-      currentUser: null
+      currentUser: null,
+      showLogout: false
     })
     localStorage.clear()
   }
@@ -107,7 +116,6 @@ class App extends Component {
         "items": []
       }
     }
-    console.log(data)
     fetch('http://localhost:3000/api/v1/cabinets', {
       method: "POST",
       headers: {
@@ -117,11 +125,13 @@ class App extends Component {
       body: JSON.stringify(data)
     })
       .then(response => response.json())
-      .then(data => this.setState({
-        allCabinets: [...this.state.allCabinets, data],
+      .then(data => {
+        console.log(data)
+        this.setState({
+        allCabinets: [...this.state.allCabinets, data.user],
         redirectToCabinet: true,
-        newCabinetId: data.id
-      }))
+        newCabinetId: data.user.id
+      })})
   }
 
   addOrEditItem = (command) => {
@@ -209,7 +219,9 @@ class App extends Component {
         <NavBar
           match={{params: {url:""}}}
           currentUser={this.state.currentUser}
-          logOut={this.logOut} />
+          logOut={this.logOut}
+          showLogout={this.state.showLogout}
+          login={this.login}/>
         <Switch>
           <Route path="/cabinets/:id/:item_id" render={(props) => {
               return <Item item={this.state.selectedItem}
@@ -246,7 +258,8 @@ class App extends Component {
           <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>} />
 
           <Route path="/login" render={() => this.state.currentUser === null ? <Login
-            setCurrentUser={this.setCurrentUser}/> :
+            setCurrentUser={this.setCurrentUser}
+            login={this.login}/> :
             <Redirect to={`/cabinets/${this.state.currentUser.id}`} />} />
 
           <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}

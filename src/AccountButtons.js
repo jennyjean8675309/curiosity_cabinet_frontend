@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 class AccountButtons extends Component {
   render(){
     return <div>
-      <button>Sign In</button>
+      <Link to="/login"><button>Sign In</button></Link>
       <br></br>
       <br></br>
       <br></br>

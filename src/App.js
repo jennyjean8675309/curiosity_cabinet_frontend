@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import CabinetsContainer from './Containers/CabinetsContainer';
 import Cabinet from './Containers/Cabinet'
 import NavBar from './NavBar'
@@ -11,11 +11,13 @@ import AccountButtons from './AccountButtons'
 import NewAccountForm from './NewAccountForm'
 import NewItemForm from './NewItemForm'
 import About from './About'
+import Login from './Login'
 
 class App extends Component {
   constructor(){
     super()
     this.state = {
+      currentUser: null,
       allCabinets: [],
       selectedCabinet: {},
       selectedItem: {},
@@ -23,16 +25,59 @@ class App extends Component {
       newCabinetId: 0,
       redirectToItem: false,
       newItemId: 0,
-      addOrEditItem: ''
+      addOrEditItem: '',
+      loading: true
     }
   }
 
   componentDidMount(){
+    this.fetchCabinets()
+    this.fetchToken()
+
+  }
+
+  fetchCabinets = () =>{
     fetch('http://localhost:3000/api/v1/cabinets')
       .then(response => response.json())
       .then(cabinetData => this.setState({
         allCabinets: cabinetData
       }))
+  }
+
+  fetchToken = () =>{
+    let token = localStorage.getItem('token')
+    if (token){
+      fetch('http://localhost:3000/api/v1/profile', {
+        method: "GET",
+        headers: {
+          "Authentication": `Bearer ${token}`
+        }
+      }).then(response => response.json())
+      .then(data =>{
+        console.log(data)
+        this.setState({
+        currentUser: data.user,
+        loading: false
+      })})
+    } else {
+      this.setState({
+        loading: false
+      })
+    }
+  }
+
+  setCurrentUser = (userObj) =>{
+    this.setState({
+      currentUser: userObj
+    })
+  }
+
+  logOut = () =>{
+    console.log('logging out...')
+    this.setState({
+      currentUser: null
+    })
+    localStorage.clear()
   }
 
   setSelectedCabinet = (cabinet) => {
@@ -51,20 +96,23 @@ class App extends Component {
   createAccount = (e) => {
     let values = e.target.parentNode.firstElementChild.querySelectorAll('input')
     let data = {
-      "name": values[5].value,
-      "first_name": values[0].value,
-      "last_name": values[1].value,
-      "email": values[2].value,
-      "username": values[3].value,
-      "password": values[4].value,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Arolsen_Klebeband_09_231_1.jpg/405px-Arolsen_Klebeband_09_231_1.jpg",
-      "items": []
+      cabinet: {
+        "name": values[5].value,
+        "first_name": values[0].value,
+        "last_name": values[1].value,
+        "email": values[2].value,
+        "username": values[3].value,
+        "password": values[4].value,
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Arolsen_Klebeband_09_231_1.jpg/405px-Arolsen_Klebeband_09_231_1.jpg",
+        "items": []
+      }
     }
     console.log(data)
     fetch('http://localhost:3000/api/v1/cabinets', {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Accept: 'application/json'
       },
       body: JSON.stringify(data)
     })
@@ -101,7 +149,8 @@ class App extends Component {
     fetch('http://localhost:3000/api/v1/items', {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Accept": "application/json"
       },
       body: JSON.stringify(data)
     }).then(response => response.json())
@@ -157,7 +206,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar match={{params: {url:""}}}/>
+        <NavBar
+          match={{params: {url:""}}}
+          currentUser={this.state.currentUser}
+          logOut={this.logOut} />
         <Switch>
           <Route path="/cabinets/:id/:item_id" render={(props) => {
               return <Item item={this.state.selectedItem}
@@ -173,6 +225,7 @@ class App extends Component {
               selectItem={this.setSelectedItem}
               addOrEditItem={this.addOrEditItem}
               match={{params: {id:cabinetId, url:cabinetId}}}
+              currentUser={this.state.currentUser}
               />
             }}
             />
@@ -190,7 +243,11 @@ class App extends Component {
           redirectToCabinet={this.state.redirectToCabinet}
           newCabinetId={this.state.newCabinetId}/>}/>
 
-          <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>}/>
+          <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>} />
+
+          <Route path="/login" render={() => this.state.currentUser === null ? <Login
+            setCurrentUser={this.setCurrentUser}/> :
+            <Redirect to={`/cabinets/${this.state.currentUser.id}`} />} />
 
           <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}
           selectCabinet={this.setSelectedCabinet}

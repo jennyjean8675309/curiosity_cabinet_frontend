@@ -27,14 +27,25 @@ class App extends Component {
       newItemId: 0,
       addOrEditItem: '',
       loading: true,
-      showLogout: false
+      showLogout: false,
+      itemTypes: []
     }
   }
 
   componentDidMount(){
     this.fetchCabinets()
     this.fetchToken()
+    this.fetchItemTypes()
+  }
 
+  fetchItemTypes = () =>{
+    fetch('http://localhost:3000/api/v1/item_types')
+    .then(response => response.json())
+    .then(data => {
+      this.setState({
+        itemTypes: data
+      })
+    })
   }
 
   fetchCabinets = () =>{
@@ -69,8 +80,10 @@ class App extends Component {
   }
 
   setCurrentUser = (userObj) =>{
+    let userCabinet = this.state.allCabinets.find(c => c.id === userObj.id)
     this.setState({
-      currentUser: userObj
+      currentUser: userObj,
+      selectedCabinet: userCabinet
     })
   }
 
@@ -130,7 +143,10 @@ class App extends Component {
         this.setState({
         allCabinets: [...this.state.allCabinets, data.user],
         redirectToCabinet: true,
-        newCabinetId: data.user.id
+        newCabinetId: data.user.id,
+        selectedCabinet: data.user,
+        currentUser: data.user,
+        showLogout: true
       })})
   }
 
@@ -164,10 +180,7 @@ class App extends Component {
       },
       body: JSON.stringify(data)
     }).then(response => response.json())
-    .then(data => this.setState({
-      redirectToItem: true,
-      newItemId: data.id
-    }))
+    .then(data => this.addItemInDOM(data))
   }
 
   editItem = (e, item) => {
@@ -188,10 +201,13 @@ class App extends Component {
       },
       body: JSON.stringify(data)
     }).then(response => response.json())
-    .then(data => this.setState({
+    .then(data => {
+      this.setState({
       selectedItem: data,
       redirectToItem: true
-    }))
+      })
+      this.editItemInDOM(data)}
+    )
   }
 
   deleteItem = (item) => {
@@ -199,6 +215,18 @@ class App extends Component {
       method: "DELETE"
     }).then(response => response.json())
     .then(data => this.deleteItemFromDOM(data))
+  }
+
+  addItemInDOM = (data) =>{
+    console.log(data)
+    let cabinet = this.state.allCabinets.find(c => c.id === data.cabinet_id)
+    debugger;
+    this.setState({
+    redirectToItem: true,
+    newItemId: data.id,
+    selectedCabinet: cabinet,
+    currentUser: cabinet
+    })
   }
 
   deleteItemFromDOM = (data) => {
@@ -211,7 +239,19 @@ class App extends Component {
     })
   }
 
-
+  editItemInDOM = (editedItem) =>{
+    (console.log('showing updated changes to item on cabinet page...', editedItem))
+    let item_type = this.state.itemTypes.find(item_type => item_type.id = editedItem.item_type_id)
+    editedItem["item_type"] = item_type
+    let item = this.state.selectedCabinet.items.find(i => i.item_id === editedItem.id)
+    let clonedCabinet = Object.assign({}, this.state.selectedCabinet)
+    let itemIndex = clonedCabinet.items.indexOf(item)
+    let updatedCabinet = clonedCabinet.items.splice(itemIndex, 1)
+    clonedCabinet.items.push(editedItem)
+    this.setState({
+      selectedCabinet: clonedCabinet
+    })
+  }
 
   render() {
     return (
@@ -227,7 +267,8 @@ class App extends Component {
               return <Item item={this.state.selectedItem}
               deleteItem={this.deleteItem}
               selectedCabinet={this.state.selectedCabinet}
-              addOrEditItem={this.addOrEditItem}/>
+              addOrEditItem={this.addOrEditItem}
+              currentUser={this.state.currentUser}/>
               }}
             />
 

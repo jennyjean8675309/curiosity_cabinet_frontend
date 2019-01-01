@@ -11,7 +11,7 @@ class ItemCard extends Component{
         <div className="content">
           <p className="header">{this.props.item.name}</p>
           <div className="meta">
-            <span className="type">{this.props.item.item_type.name}</span>
+            <span className="type">{this.props.item.item_type.name ? this.props.item.item_type.name : null}</span>
           </div>
           <div className="description">{this.props.item.description}
           </div>
@@ -22,8 +22,8 @@ class ItemCard extends Component{
         </div>
         <div className="extra content">
           <a>
-            <i className="user icon"></i>
-            10 Comments
+            <i className="lock open icon"></i>
+            This cabinet is unlocked
           </a>
         </div>
       </div>

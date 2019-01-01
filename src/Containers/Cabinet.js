@@ -21,8 +21,7 @@ class Cabinet extends Component{
             <div>
               <br></br>
               <br></br>
-              <br></br>
-              <Link to="/new_item"><button onClick={() => this.props.addOrEditItem('add')}>Collect an Item</button></Link>
+              <br></br>{this.props.currentUser && this.props.cabinet.id === this.props.currentUser.id ? <Link to="/new_item"><button onClick={() => this.props.addOrEditItem('add')}>Collect an Item</button></Link> : null}
             </div>
           </div>
            : null }

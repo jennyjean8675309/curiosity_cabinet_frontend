@@ -108,10 +108,14 @@ class App extends Component {
     })
   }
 
-  setSelectedItem = (item) =>
-  {
+  setSelectedItem = (item, cabinet) => {
+    if (this.props.addOrEditItem === 'add'){
+      cabinet.items.push(item)
+      console.log(cabinet)
+    }
     this.setState({
-      selectedItem: item
+      selectedItem: item,
+      selectedCabinet: cabinet
     })
   }
 
@@ -156,7 +160,8 @@ class App extends Component {
       addOrEditItem: 'add'
     })} else if (command === 'edit'){
     this.setState({
-      addOrEditItem: 'edit'
+      addOrEditItem: 'edit',
+      redirectToItem: false
     })
     }
   }
@@ -164,13 +169,13 @@ class App extends Component {
   addItem = (e, cabinet) => {
     let inputs = e.target.parentNode.firstElementChild.querySelectorAll('.input-field')
     let data = {
-      "cabinet_id": this.state.selectedCabinet.id,
-      "item_type_id": inputs[5].value,
-      "name": inputs[0].value,
-      "description": inputs[3].value,
-      "interpretation": inputs[4].value,
-      "location": inputs[1].value,
-      "image_url": inputs[2].value
+        "cabinet_id": this.state.selectedCabinet.id,
+        "item_type_id": inputs[5].value,
+        "name": inputs[0].value,
+        "description": inputs[3].value,
+        "interpretation": inputs[4].value,
+        "location": inputs[1].value,
+        "image_url": inputs[2].value
     }
     fetch('http://localhost:3000/api/v1/items', {
       method: "POST",
@@ -180,7 +185,8 @@ class App extends Component {
       },
       body: JSON.stringify(data)
     }).then(response => response.json())
-    .then(data => this.addItemInDOM(data))
+    .then(data => {
+      this.addItemInDOM(data)})
   }
 
   editItem = (e, item) => {
@@ -218,13 +224,25 @@ class App extends Component {
   }
 
   addItemInDOM = (data) =>{
-    console.log(data)
+    console.log('this is my data', data)
+    let item_type = this.state.itemTypes.find(i => i.id === data.item_type_id)
+    let item = {
+      "description": data.description,
+      "image_url": data.image_url,
+      "interpretation": data.interpretation,
+      "item_id": data.id,
+      "item_type": item_type,
+      "location": data.location,
+      "name": data.name
+    }
     let cabinet = this.state.allCabinets.find(c => c.id === data.cabinet_id)
-    debugger;
+    console.log(cabinet)
+    cabinet.items.push(item)
     this.setState({
     redirectToItem: true,
     newItemId: data.id,
     selectedCabinet: cabinet,
+    selectedItem: Object.assign({}, data),
     currentUser: cabinet
     })
   }
@@ -296,7 +314,7 @@ class App extends Component {
           redirectToCabinet={this.state.redirectToCabinet}
           newCabinetId={this.state.newCabinetId}/>}/>
 
-          <Route path="/my_cabinet" render={() => <AccountButtons createAccount={this.createAccount}/>} />
+        <Route path="/my_cabinet" render={() => this.state.currentUser ? <Redirect to={`/cabinets/${this.state.currentUser.id}`} /> : <AccountButtons createAccount={this.createAccount}/>} />
 
           <Route path="/login" render={() => this.state.currentUser === null ? <Login
             setCurrentUser={this.setCurrentUser}

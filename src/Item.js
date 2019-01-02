@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 class Item extends Component{
   render(){
@@ -18,7 +18,7 @@ class Item extends Component{
             {this.props.currentUser && this.props.selectedCabinet.id === this.props.currentUser.id ? <div><Link to="/new_item"><button onClick={() => this.props.addOrEditItem('edit')}>Edit This Item</button></Link>
             <br></br>
             <br></br>
-            <Link to={`/cabinets/${this.props.selectedCabinet.id}`}><button onClick={() => this.props.deleteItem(this.props.item)}>Delete This Item</button></Link></div> : null}          
+            <Link to={`/cabinets/${this.props.selectedCabinet.id}`}><button onClick={() => this.props.deleteItem(this.props.item)}>Delete This Item</button></Link></div> : null}
           </div> :
           null }
       </div>

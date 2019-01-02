@@ -38,13 +38,22 @@
 }
 
 .home-header {
-  font-family: 'Chalkduster';
-  font-size: 60px;
+  font-family: 'Century Gothic';
+  font-size: 75px;
   text-align: left;
 }
 
 .home-subheader {
-  font-family: 'Chalkduster';
-  font-size: 40px;
+  font-family: 'Century Gothic';
+  font-size: 50px;
   text-align: right;
+}
+
+.circular {
+  margin: auto;
+}
+
+.about {
+  margin-left: 200px;
+  margin-right: 200px;
 }

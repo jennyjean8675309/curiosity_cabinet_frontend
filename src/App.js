@@ -19,6 +19,7 @@ class App extends Component {
     this.state = {
       currentUser: null,
       allCabinets: [],
+
       selectedCabinet: {},
       selectedItem: {},
       redirectToCabinet: false,

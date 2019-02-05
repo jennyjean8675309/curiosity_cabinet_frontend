@@ -3,7 +3,7 @@ import React from 'react'
 const About = () =>
   <div className="about">
     <h1 className="ui header">Cabinets of Curiosity</h1>
-    <img src={require("./cabinet_doors.jpg")} className="ui medium circular image"/>
+    <img src={require("../cabinet_doors.jpg")} className="ui medium circular image"/>
     <br></br>
     <br></br>
     <h3>A Brief history of the cabinet of curiosity...</h3>

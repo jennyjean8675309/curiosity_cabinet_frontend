@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchingUsers } from './actions/actions'
+import { fetchingUsers, fetchingCurrentUser } from './actions/actions';
 import './App.css';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import CabinetsContainer from './Containers/CabinetsContainer';
-import Cabinet from './Containers/Cabinet'
-import NavBar from './NavBar'
-import 'semantic-ui-css/semantic.min.css'
-import Item from './Item'
-import Home from './Home'
-import AccountButtons from './AccountButtons'
-import NewAccountForm from './NewAccountForm'
-import NewItemForm from './NewItemForm'
-import About from './About'
-import Login from './Login'
+import Cabinet from './Containers/Cabinet';
+import NavBar from './Containers/NavBar';
+import 'semantic-ui-css/semantic.min.css';
+import Item from './Components/Item';
+import Home from './Components/Home';
+import AccountButtons from './Components/AccountButtons';
+import NewAccountForm from './Components/NewAccountForm';
+import NewItemForm from './Components/NewItemForm';
+import About from './Components/About';
+import Login from './Components/Login';
 
 class App extends Component {
   constructor(){
@@ -35,7 +35,7 @@ class App extends Component {
 
   componentDidMount(){
     this.props.fetchUsers()
-    this.fetchToken()
+    this.props.fetchCurrentUser()
     this.fetchItemTypes()
   }
 
@@ -47,29 +47,6 @@ class App extends Component {
         itemTypes: data
       })
     })
-  }
-
-  fetchToken = () =>{
-    let token = localStorage.getItem('token')
-    if (token){
-      fetch('http://localhost:3000/api/v1/profile', {
-        method: "GET",
-        headers: {
-          "Authentication": `Bearer ${token}`
-        }
-      }).then(response => response.json())
-      .then(data =>{
-        console.log(data)
-        this.setState({
-        currentUser: data.user,
-        loading: false,
-        showLogout: true
-      })})
-    } else {
-      this.setState({
-        loading: false
-      })
-    }
   }
 
   setCurrentUser = (userObj) =>{
@@ -330,7 +307,19 @@ const mapStateToProps = (state) =>{
   return { usersCabinets: state.users }
 }
 
+// this.setState({
+// currentUser: data.user,
+// loading: false,
+// showLogout: true
+// })})
+// } else {
+// this.setState({
+// loading: false
+// })
+// }
+
 
 export default withRouter(connect(mapStateToProps, {
-  fetchUsers: fetchingUsers
+  fetchUsers: fetchingUsers,
+  fetchCurrentUser: fetchingCurrentUser
 })(App));

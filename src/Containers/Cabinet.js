@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import ItemCard from '../ItemCard'
+import ItemCard from '../Components/ItemCard'
 import { Link } from 'react-router-dom'
 
 class Cabinet extends Component{

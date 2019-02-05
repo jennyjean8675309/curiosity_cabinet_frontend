@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchingUsers } from './actions/actions'
 import './App.css';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import CabinetsContainer from './Containers/CabinetsContainer';
 import Cabinet from './Containers/Cabinet'
 import NavBar from './NavBar'
@@ -18,8 +20,6 @@ class App extends Component {
     super()
     this.state = {
       currentUser: null,
-      allCabinets: [],
-
       selectedCabinet: {},
       selectedItem: {},
       redirectToCabinet: false,
@@ -34,7 +34,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-    this.fetchCabinets()
+    this.props.fetchUsers()
     this.fetchToken()
     this.fetchItemTypes()
   }
@@ -47,14 +47,6 @@ class App extends Component {
         itemTypes: data
       })
     })
-  }
-
-  fetchCabinets = () =>{
-    fetch('http://localhost:3000/api/v1/cabinets')
-      .then(response => response.json())
-      .then(cabinetData => this.setState({
-        allCabinets: cabinetData
-      }))
   }
 
   fetchToken = () =>{
@@ -292,8 +284,9 @@ class App extends Component {
             />
 
           <Route path="/cabinets/:id" render={(props) => {
+              console.log('props', props)
               let cabinetId = Number(props.match.params.id)
-              return <Cabinet cabinet={this.state.allCabinets.find(c => c.id === cabinetId)}
+              return <Cabinet cabinet={this.props.usersCabinets.find(c => c.id === cabinetId)}
               selectItem={this.setSelectedItem}
               addOrEditItem={this.addOrEditItem}
               match={{params: {id:cabinetId, url:cabinetId}}}
@@ -322,10 +315,7 @@ class App extends Component {
             login={this.login}/> :
             <Redirect to={`/cabinets/${this.state.currentUser.id}`} />} />
 
-          <Route path="/cabinets" render={() => <CabinetsContainer allCabinets={this.state.allCabinets}
-          selectCabinet={this.setSelectedCabinet}
-          match={{params: {url:"/cabinets"}}}
-          /> }/>
+          <Route exact path="/cabinets" component={CabinetsContainer} />
 
           <Route path="/about" component={About}/>
 
@@ -336,4 +326,11 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) =>{
+  return { usersCabinets: state.users }
+}
+
+
+export default withRouter(connect(mapStateToProps, {
+  fetchUsers: fetchingUsers
+})(App));

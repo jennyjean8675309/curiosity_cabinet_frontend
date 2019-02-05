@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import CabinetCard from './CabinetCard'
 
 class CabinetsContainer extends Component{
@@ -9,8 +10,6 @@ class CabinetsContainer extends Component{
           <CabinetCard
             key={cabinet.id}
             cabinet={cabinet}
-            handleOnClick={this.props.selectCabinet}
-            match={this.props.match}
           />
         )}
       </div>
@@ -18,4 +17,11 @@ class CabinetsContainer extends Component{
   }
 }
 
-export default CabinetsContainer
+const mapStateToProps = (state) =>{
+  return { allCabinets: state.users }
+}
+
+export default connect(mapStateToProps)(CabinetsContainer);
+
+// handleOnClick={this.props.selectCabinet}
+// match={this.props.match}

@@ -1,7 +1,7 @@
-export const usersReducer = (users = []) => {
+export const usersReducer = (users = [], action) => {
   switch (action.type) {
-    case 'SET_USERS':
-      return [...users]
+    case 'SET_USER_DATA':
+      return action.users
     default:
       return users
   }
